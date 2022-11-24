@@ -15,19 +15,37 @@ import logo from '../../assets/logo.png';
 import CustomInput from '../components/customInput';
 import CustomButton from '../components/CustomButton';
 import passwords from '../data';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import data from '../data';
 
 const LoginScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const context = useContext(UserContext)
-  console.log({context});
-  // const {signIn} = useUserContext();
-  // const {signIn} = useContext(UserContext)
-  // console.log('From LoginScreen, data is');
-  // console.log({data: signIn});
-  // console.log("done");
+  const [userError, setUserError] = useState(false);
+  const [passError, setPassError] = useState(false);
   const {height: windowHeight} = useWindowDimensions();
-  const onPressSignIn = () => {
+  const onPressSignIn = async () => {
+    // Checking for empty input setting Error flags accordingly for rendering borders of TextInput el
+    if (username.trim().length < 1) {
+      setUserError(true);
+    } else setUserError(false);
+    if (password.trim().length < 1) {
+      setPassError(true);
+    } else setPassError(false);
+
+    // look for valid user, return if no valid user
+    const valid = data.filter(
+      obj => obj.username === username && obj.password === password,
+    ).length;
+    if (!valid) return;
+
+    // setting the current logged in user in storage
+    try {
+      await AsyncStorage.setItem('loggedUser', username);
+      navigation.replace('Home')
+    } catch (error) {
+      console.log({error});
+    }
     console.warn('Press signIn from LoginScreen');
     // signIn();
   };
@@ -46,12 +64,14 @@ const LoginScreen = ({navigation}) => {
         <CustomInput
           placeholder={'Username'}
           value={username}
-          setValue={setUsername}></CustomInput>
+          setValue={setUsername}
+          errorState={userError}></CustomInput>
         <CustomInput
           placeholder={'Password'}
           value={password}
           setValue={setPassword}
-          secureTextEntry></CustomInput>
+          secureTextEntry
+          errorState={passError}></CustomInput>
         <CustomButton onPress={onPressSignIn} text="Sign In"></CustomButton>
         <CustomButton
           onPress={onPressSignUp}
@@ -76,9 +96,9 @@ const styles = StyleSheet.create({
     maxWidth: 500,
     maxHeight: 200,
   },
-  scrollview:{
-    minHeight:'100%'
-  }
+  scrollview: {
+    minHeight: '100%',
+  },
 });
 
 export default LoginScreen;

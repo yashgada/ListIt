@@ -1,26 +1,27 @@
-import {Button, Platform, StyleSheet, Text, View} from 'react-native';
+import {Button, Platform, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import CustomButton from './CustomButton';
 
 const TaskItem = ({title, timestamp,id, removeTask, onPressEdit}) => {
     const onPress = ()=>{
+      if(!removeTask) return;
         removeTask(id)
     }
     // console.log('from taskItem');
     // console.log(typeof(id));
     // console.log({removeTask});
   return (
-    <View style={[styles.container, styles.boxShadow]}>
+    <View style={[styles.container, {elevation:2}]}>
       <View style={styles.data}>
         <Text style={styles.text}>{title}</Text>
         <Text>{timestamp}</Text>
       </View>
       <View style={styles.buttons}>
-        <Button style={styles.button}
-          title="Delete"
-          //    title={key}
+        <CustomButton
+          text="Delete"
           onPress={onPress}
-        ></Button>
-        <Button style={styles.button} title="Edit" onPress={()=>{onPressEdit(id,title)}}></Button>
+        ></CustomButton>
+        <CustomButton  text="Editj" onPress={()=>{onPressEdit(id,title)}}></CustomButton>
       </View>
     </View>
   );
@@ -32,12 +33,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     padding: 10,
     marginVertical: 10,
     alignItems: 'center',
     // width:'80%',
-    // backgroundColor:'#',
     // borderWidth: 1,
   },
   text: {
@@ -45,9 +45,15 @@ const styles = StyleSheet.create({
     // fontWeight:'bold',
     fontSize: 24,
   },
-  data: {},
+  data: {
+    flex:5,
+    // borderWidth:10,
+    // borderColor:'red'
+  },
   buttons:{
-    flexDirection:'row',
+    flex:2,
+    // flexDirection:'row',
+    // borderWidth:1,
   },
   button:{
     paddingHorizontal:5,
@@ -56,18 +62,18 @@ const styles = StyleSheet.create({
     backgroundColor:'black'
   }
 });
-const generateBoxShadowStyle = () => {
-  if (Platform.OS === 'ios') {
-    styles.boxShadow = {
-      shadowColor: '#000',
-      shadowOffset: {width: 0, height: 2},
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-    };
-  } else if (Platform.OS === 'android') {
-    styles.boxShadow = {
-      elevation: 5,
-    };
-  }
-};
-generateBoxShadowStyle();
+// const generateBoxShadowStyle = () => {
+//   if (Platform.OS === 'ios') {
+//     styles.boxShadow = {
+//       shadowColor: '#000',
+//       shadowOffset: {width: 0, height: 2},
+//       shadowOpacity: 0.25,
+//       shadowRadius: 3.84,
+//     };
+//   } else if (Platform.OS === 'android') {
+//     styles.boxShadow = {
+//       elevation: 1,
+//     };
+//   }
+// };
+// generateBoxShadowStyle();

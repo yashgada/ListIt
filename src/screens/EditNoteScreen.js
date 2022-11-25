@@ -6,7 +6,7 @@ const EditNoteScreen = ({route, navigation}) => {
   const [input, setInput] = useState('');
   const [currentUser, setCurrentUser] = useState(null)
   const [list, setList] = useState([])
-  console.log({route});
+  // console.log({route});
   const {id} = route.params;
 
   const init = () => {
@@ -21,7 +21,7 @@ const EditNoteScreen = ({route, navigation}) => {
           AsyncStorage.getItem(`${value}list`)
             .then(list => {
               if (list !== null) {
-                console.log('reached');
+                // console.log('reached');
                 list = JSON.parse(list)
                 setList(list)
                 const currentTask = list.filter(task=>task.key===id)[0]

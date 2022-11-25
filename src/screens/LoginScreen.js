@@ -34,15 +34,21 @@ const LoginScreen = ({navigation}) => {
     } else setPassError(false);
 
     // look for valid user, return if no valid user
-    const valid = data.filter(
-      obj => obj.username === username && obj.password === password,
-    ).length;
-    if (!valid) return;
-
+    let valid = data.filter(obj => obj.username === username.trim());
+    if (!valid.length) {
+      setUserError(true);
+      setPassError(false)
+      return;
+    }
+    setUserError(false)
+    if (valid[0].password !== password.trim()) {
+      setPassError(true);
+      return;
+    }
     // setting the current logged in user in storage
     try {
-      await AsyncStorage.setItem('loggedUser', username);
-      navigation.replace('Home')
+      await AsyncStorage.setItem('loggedUser', username.trim());
+      navigation.replace('Home');
     } catch (error) {
       console.log({error});
     }
@@ -70,7 +76,7 @@ const LoginScreen = ({navigation}) => {
           placeholder={'Password'}
           value={password}
           setValue={setPassword}
-          secureTextEntry
+          // secureTextEntry
           errorState={passError}></CustomInput>
         <CustomButton onPress={onPressSignIn} text="Sign In"></CustomButton>
         <CustomButton
@@ -97,7 +103,7 @@ const styles = StyleSheet.create({
     maxHeight: 200,
   },
   scrollview: {
-    minHeight: '100%',
+    flex: 1,
   },
 });
 

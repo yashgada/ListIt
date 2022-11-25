@@ -29,5 +29,8 @@ const styles = StyleSheet.create({
     },
     signUp:{
         color:'#3b71f3'
-    }
+    },
+    // add:{
+    //   // color:'#EC8B5E'
+    // }
 })

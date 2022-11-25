@@ -18,6 +18,7 @@ const HomeScreen = ({navigation}) => {
     {title: 'Add a task like such', timestamp: 'Time stamps appear here'},
   ]);
   const [input, setInput] = useState('');
+  const [editId, setEditId] = useState(null);
   const getCurrentUser = async () => {
     try {
       const username = await AsyncStorage.getItem('loggedUser');
@@ -49,44 +50,68 @@ const HomeScreen = ({navigation}) => {
       .then(value => {
         if (value !== null) {
           setCurrentUser(value);
-          AsyncStorage.getItem(`${value}list`).then(list => {
-            if (list !== null) {
-              setList(JSON.parse(list));
-            }
-          }).catch(err=>console.log(err));
+          AsyncStorage.getItem(`${value}list`)
+            .then(list => {
+              if (list !== null) {
+                setList(JSON.parse(list));
+              }
+            })
+            .catch(err => console.log(err));
         }
       })
       .catch(err => console.log(err));
   };
   const logOut = () => {
     AsyncStorage.removeItem('loggedUser');
-    AsyncStorage.clear()
+    AsyncStorage.clear();
     navigation.replace('Login');
   };
-  const addTask = async () => {
+  const addTask = () => {
     if (!input.trim().length) return;
     const inputTime = new Date().toLocaleString();
-    try {
-      await AsyncStorage.setItem(
-        currentUser + 'list',
-        JSON.stringify([...list, {title: input, timestamp: inputTime, key:new Date.getTime()}]),
-      );
-      console.log(currentUser + 'list');
-      console.log(`${currentUser}list`);
-    } catch (error) {
-      console.log({error});
-    }
-    setList(list => [...list, {title: input, timestamp: inputTime}]);
+    const key = new Date().getTime();
+    AsyncStorage.setItem(
+      currentUser + 'list',
+      JSON.stringify([...list, {title: input, timestamp: inputTime, key}]),
+    ).catch(err => console.log(err));
+    setList(list => [...list, {title: input, timestamp: inputTime, key}]);
 
     setInput('');
   };
-  const removeTask = (key)=>{
-    const newList = list.filter(task=>task.key!==key)
-    AsyncStorage.setItem(currentUser+'list',JSON.stringify(newList))
+  const removeTask = key => {
+    // console.log('Remove triggered');
+    // console.log({key});
+    const newList = list.filter(task => task.key !== key);
+    // console.log({newList});
+    AsyncStorage.setItem(currentUser + 'list', JSON.stringify(newList)).then(
+      () => setList(newList),
+    );
+  };
+  const updateTask = (id,text)=>{
+    // takes id and text to update the task
+    // const newList = list.map((task)=>{
+    //   if(task.key!==id) return task
+    //   return {...task, title:text}
+    // })
+    // AsyncStorage.setItem(currentUser+'list',JSON.stringify(newList)).then(()=>setList(newList))
+    console.log('updateTask fired');
   }
-  const renderTask = ({item}) => (
-    <TaskItem title={item.title} timestamp={item.timestamp} key={item.key}></TaskItem>
-  );
+  const onPressEdit = (id,text)=>{
+    // This function navigates to the edit screen and sends the text value of the task and task id to the screen.
+    navigation.replace('Edit',{id})
+  }
+  const renderTask = ({item}) => {
+    // console.log({item});
+    // console.log(typeof item.key);
+    return (
+      <TaskItem
+        title={item.title}
+        timestamp={item.timestamp}
+        id={item.key}
+        removeTask={removeTask}
+        onPressEdit={onPressEdit}></TaskItem>
+    );
+  };
   // const keyExtractor = (_, key) => key;
   useEffect(() => {
     init();
@@ -134,7 +159,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     margin: 10,
     // backgroundColor: 'red',
-    borderWidth:1,
+    borderWidth: 1,
     borderColor: 'red',
     // padding: 10,
     // marginVertical: 10,

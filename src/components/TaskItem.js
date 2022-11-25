@@ -1,7 +1,13 @@
 import {Button, Platform, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const TaskItem = ({title, timestamp, key}) => {
+const TaskItem = ({title, timestamp,id, removeTask, onPressEdit}) => {
+    const onPress = ()=>{
+        removeTask(id)
+    }
+    // console.log('from taskItem');
+    // console.log(typeof(id));
+    // console.log({removeTask});
   return (
     <View style={[styles.container, styles.boxShadow]}>
       <View style={styles.data}>
@@ -12,8 +18,9 @@ const TaskItem = ({title, timestamp, key}) => {
         <Button style={styles.button}
           title="Delete"
           //    title={key}
+          onPress={onPress}
         ></Button>
-        <Button style={styles.button} title="Edit"></Button>
+        <Button style={styles.button} title="Edit" onPress={()=>{onPressEdit(id,title)}}></Button>
       </View>
     </View>
   );

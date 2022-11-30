@@ -7,7 +7,7 @@ const SplashScreen = ({navigation}) => {
     AsyncStorage.getItem('loggedUser')
       .then(data => {
         if (data !== null) {
-          navigation.replace('Home')
+          navigation.replace('LoggedIn')
         }else navigation.replace('Login')
       })
       .catch(err => console.log(err));

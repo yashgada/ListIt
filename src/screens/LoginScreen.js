@@ -12,7 +12,7 @@ import {useContext, useState} from 'react';
 import {UserContext, useUserContext} from '../context/userContext';
 import SignupScreen from './SignupScreen';
 import logo from '../../assets/logo.png';
-import CustomInput from '../components/customInput';
+import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import passwords from '../data';
 import AsyncStorage from '@react-native-async-storage/async-storage';

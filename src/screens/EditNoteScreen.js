@@ -47,7 +47,7 @@ const EditNoteScreen = ({route, navigation}) => {
         return{...task,title:input}
       }
     })
-    AsyncStorage.setItem(currentUser+'list',JSON.stringify(newList)).then(()=>navigation.replace('Home'))
+    AsyncStorage.setItem(currentUser+'list',JSON.stringify(newList)).then(()=>navigation.goBack())
   }
 
   useEffect(() => {

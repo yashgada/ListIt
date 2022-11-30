@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskItem from '../components/TaskItem';
 import CustomButton from '../components/CustomButton';
 import CustomInput from '../components/CustomInput';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 const HomeScreen = ({navigation}) => {
   const [currentUser, setCurrentUser] = useState('');
@@ -19,7 +20,8 @@ const HomeScreen = ({navigation}) => {
     {title: 'Add a task like such', timestamp: 'Time stamps appear here'},
   ]);
   const [input, setInput] = useState('');
-  const [editId, setEditId] = useState(null);
+  const [categories, setCategories] = useState([])
+  const [category, setCategory] = useState('')
   const getCurrentUser = async () => {
     try {
       const username = await AsyncStorage.getItem('loggedUser');
@@ -60,7 +62,12 @@ const HomeScreen = ({navigation}) => {
             .catch(err => console.log(err));
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
+
+      AsyncStorage.getItem('categories').then(categories => {
+        if (categories === null) return;
+        setCategories(JSON.parse(categories));
+      }).catch(err=>console.log({err}));
   };
   const logOut = () => {
     AsyncStorage.removeItem('loggedUser');
@@ -73,9 +80,9 @@ const HomeScreen = ({navigation}) => {
     const key = new Date().getTime();
     AsyncStorage.setItem(
       currentUser + 'list',
-      JSON.stringify([...list, {title: input, timestamp: inputTime, key}]),
+      JSON.stringify([...list, {title: input, timestamp: inputTime, key,category:{name:cate}}]),
     ).catch(err => console.log(err));
-    setList(list => [...list, {title: input, timestamp: inputTime, key}]);
+    setList(list => [...list, {title: input, timestamp: inputTime, key,category:{}}]);
 
     setInput('');
   };
@@ -88,18 +95,9 @@ const HomeScreen = ({navigation}) => {
       () => setList(newList),
     );
   };
-  const updateTask = (id, text) => {
-    // takes id and text to update the task
-    // const newList = list.map((task)=>{
-    //   if(task.key!==id) return task
-    //   return {...task, title:text}
-    // })
-    // AsyncStorage.setItem(currentUser+'list',JSON.stringify(newList)).then(()=>setList(newList))
-    console.log('updateTask fired');
-  };
-  const onPressEdit = (id, text) => {
+  const onPressEdit = id => {
     // This function navigates to the edit screen and sends the text value of the task and task id to the screen.
-    navigation.replace('Edit', {id});
+    navigation.navigate('Edit', {id});
   };
   const renderTask = ({item}) => {
     // console.log({item});
@@ -120,24 +118,32 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <View style={styles.root}>
-      <View style={styles.inputForm}>
-        <View style={styles.inputBox}>
-          <CustomInput
-            placeholder="Input here"
-            value={input}
-            setValue={setInput}
-          ></CustomInput>
+      <View>
+        <View style={styles.inputForm}>
+          <View style={styles.inputBox}>
+            <CustomInput
+              placeholder="Input here"
+              value={input}
+              setValue={setInput}></CustomInput>
+          </View>
+          <View style={styles.addButton}>
+            <CustomButton onPress={addTask} text="Add" />
+          </View>
         </View>
-        <View style={styles.addButton}>
-          <CustomButton onPress={addTask} text="Add" />
-        </View>
+        <SelectList data={categories.map((el,index)=>({'id':index,'value':el.name}))} setSelected={setCategory}></SelectList>
       </View>
       <CustomButton
         style={styles.button}
         text="Sign Out"
         onPress={logOut}></CustomButton>
       <FlatList
-      ListEmptyComponent={<TaskItem onPressEdit={()=>null} title="This is how your task will appear" timestamp="This will be the timestamp"/>}
+        ListEmptyComponent={
+          <TaskItem
+            onPressEdit={() => null}
+            title="This is how your task will appear"
+            timestamp="This will be the timestamp"
+          />
+        }
         style={styles.flatlist}
         data={list}
         renderItem={renderTask}
@@ -168,7 +174,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   addButton: {
-    marginHorizontal:10,
+    marginHorizontal: 10,
   },
   flatlist: {
     width: '100%',

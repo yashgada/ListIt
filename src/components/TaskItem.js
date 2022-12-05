@@ -2,7 +2,7 @@ import {Button, Platform, Pressable, StyleSheet, Text, View} from 'react-native'
 import React from 'react';
 import CustomButton from './CustomButton';
 
-const TaskItem = ({title, timestamp,id, removeTask, onPressEdit}) => {
+const TaskItem = ({title, timestamp,id, removeTask, onPressEdit,category='#000'}) => {
     const onPress = ()=>{
       if(!removeTask) return;
         removeTask(id)
@@ -13,7 +13,7 @@ const TaskItem = ({title, timestamp,id, removeTask, onPressEdit}) => {
   return (
     <View style={[styles.container, {elevation:2}]}>
       <View style={styles.data}>
-        <Text style={styles.text}>{title}</Text>
+        <Text style={[styles.text,{color:category}]}>{title}</Text>
         <Text>{timestamp}</Text>
       </View>
       <View style={styles.buttons}>

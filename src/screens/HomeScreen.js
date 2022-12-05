@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskItem from '../components/TaskItem';
 import CustomButton from '../components/CustomButton';
 import CustomInput from '../components/CustomInput';
-import { SelectList } from 'react-native-dropdown-select-list';
+import {SelectList} from 'react-native-dropdown-select-list';
 
 const HomeScreen = ({navigation}) => {
   const [currentUser, setCurrentUser] = useState('');
@@ -20,8 +20,8 @@ const HomeScreen = ({navigation}) => {
     {title: 'Add a task like such', timestamp: 'Time stamps appear here'},
   ]);
   const [input, setInput] = useState('');
-  const [categories, setCategories] = useState([])
-  const [category, setCategory] = useState('')
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState('');
   const getCurrentUser = async () => {
     try {
       const username = await AsyncStorage.getItem('loggedUser');
@@ -62,12 +62,14 @@ const HomeScreen = ({navigation}) => {
             .catch(err => console.log(err));
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
 
-      AsyncStorage.getItem('categories').then(categories => {
+    AsyncStorage.getItem('categories')
+      .then(categories => {
         if (categories === null) return;
         setCategories(JSON.parse(categories));
-      }).catch(err=>console.log({err}));
+      })
+      .catch(err => console.log({err}));
   };
   const logOut = () => {
     AsyncStorage.removeItem('loggedUser');
@@ -78,11 +80,24 @@ const HomeScreen = ({navigation}) => {
     if (!input.trim().length) return;
     const inputTime = new Date().toLocaleString();
     const key = new Date().getTime();
-    AsyncStorage.setItem(
-      currentUser + 'list',
-      JSON.stringify([...list, {title: input, timestamp: inputTime, key,category:{name:cate}}]),
-    ).catch(err => console.log(err));
-    setList(list => [...list, {title: input, timestamp: inputTime, key,category:{}}]);
+    const newList = [
+      ...list,
+      {
+        title: input,
+        timestamp: inputTime,
+        key,
+        category: categories.filter(cat => cat.name === category)[0],
+      },
+    ];
+    // console.log({newList});
+    console.log(newList.map(item=>item.category));
+    AsyncStorage.setItem(currentUser + 'list', JSON.stringify(newList)).catch(
+      err => console.log(err),
+    );
+    setList(
+      list => newList
+      // [...list, {title: input, timestamp: inputTime, key,category:{}}]
+    );
 
     setInput('');
   };
@@ -108,7 +123,8 @@ const HomeScreen = ({navigation}) => {
         timestamp={item.timestamp}
         id={item.key}
         removeTask={removeTask}
-        onPressEdit={onPressEdit}></TaskItem>
+        onPressEdit={onPressEdit}
+        category={item.category.colour}></TaskItem>
     );
   };
   // const keyExtractor = (_, key) => key;
@@ -130,7 +146,9 @@ const HomeScreen = ({navigation}) => {
             <CustomButton onPress={addTask} text="Add" />
           </View>
         </View>
-        <SelectList data={categories.map((el,index)=>({'id':index,'value':el.name}))} setSelected={setCategory}></SelectList>
+        <SelectList
+          data={categories.map((el, index) => ({id: index, value: el.name}))}
+          setSelected={setCategory}></SelectList>
       </View>
       <CustomButton
         style={styles.button}

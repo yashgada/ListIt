@@ -17,7 +17,7 @@ import {SelectList} from 'react-native-dropdown-select-list';
 const HomeScreen = ({navigation}) => {
   const [currentUser, setCurrentUser] = useState('');
   const [list, setList] = useState([
-    {title: 'Add a task like such', timestamp: 'Time stamps appear here'},
+    {title: 'Add a task like such', timestamp: 'Time stamps appear here',category:{colour:'#aaa',name:'Dummy'}},
   ]);
   const [input, setInput] = useState('');
   const [categories, setCategories] = useState([]);
@@ -117,6 +117,8 @@ const HomeScreen = ({navigation}) => {
   const renderTask = ({item}) => {
     // console.log({item});
     // console.log(typeof item.key);
+    console.log({item});
+    console.log({cat : item.category});
     return (
       <TaskItem
         title={item.title}

@@ -3,6 +3,7 @@ import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import HomeScreen from './HomeScreen'
 import CategoriesScreen from './CategoriesScreen'
+import FilterScreen from './FilterScreen'
 
 const Drawer = createDrawerNavigator()
 const LoggedIn = ({navigation}) => {
@@ -10,6 +11,7 @@ const LoggedIn = ({navigation}) => {
     <Drawer.Navigator>
     <Drawer.Screen name='LoggedInHome' component={HomeScreen}></Drawer.Screen>
     <Drawer.Screen name='Categories' component={CategoriesScreen}></Drawer.Screen>
+    <Drawer.Screen name='Filter' component={FilterScreen}></Drawer.Screen>
     </Drawer.Navigator>
   )
 }

@@ -37,10 +37,10 @@ const LoginScreen = ({navigation}) => {
     let valid = data.filter(obj => obj.username === username.trim());
     if (!valid.length) {
       setUserError(true);
-      setPassError(false)
+      setPassError(false);
       return;
     }
-    setUserError(false)
+    setUserError(false);
     if (valid[0].password !== password.trim()) {
       setPassError(true);
       return;
@@ -57,7 +57,7 @@ const LoginScreen = ({navigation}) => {
   };
   const onPressSignUp = () => {
     console.warn('Press signUp from LoginScreen');
-    // signUp();
+    navigation.navigate('Signup');
   };
   return (
     <ScrollView contentContainerStyle={styles.scrollview}>

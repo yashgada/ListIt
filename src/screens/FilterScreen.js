@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {SelectList} from 'react-native-dropdown-select-list';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskItem from '../components/TaskItem';
-import CustomInput from '../components/CustomInput';
+// import CustomInput from '../components/CustomInput';
 
 const FilterScreen = ({navigation}) => {
   const [currentUser, setCurrentUser] = useState('');
@@ -18,12 +18,15 @@ const FilterScreen = ({navigation}) => {
 
   //   Here, why not maintain a separate filteredList state variable? What are the advantages and disadvantages?
   const filteredTasks = list.filter(item => {
-    if(selectedFilter === 'Search'){
-        return item.title.toLowerCase().includes(searchInput.toLowerCase());
-    }else if(selectedFilter=== 'Categories'){
-        if(!selectedCategory) return true
-        return item.category.name === selectedCategory;
-    }else{console.log("We have a problem"); return true}
+    if (selectedFilter === 'Search') {
+      return item.title.toLowerCase().includes(searchInput.toLowerCase());
+    } else if (selectedFilter === 'Categories') {
+      if (!selectedCategory) return true;
+      return item.category.name === selectedCategory;
+    } else {
+      console.log('We have a problem');
+      return true;
+    }
   });
 
   const init = () => {
@@ -85,9 +88,9 @@ const FilterScreen = ({navigation}) => {
     setSelectedCategory(null);
   };
 
-  const handleCategorySelect = ()=>{
+  const handleCategorySelect = () => {
     // setFilteredTasks(list.filter(item=>item.category.name === selectedCategory))
-  }
+  };
 
   const renderTask = ({item}) => {
     // console.log({item});
@@ -126,11 +129,10 @@ const FilterScreen = ({navigation}) => {
             <>
               <Text>Selected category is {selectedCategory}</Text>
               <SelectList
-              data={categories.map(cat=>cat.name)}
-              setSelected={setSelectedCategory}
-              search={false}
-              onSelect={handleCategorySelect}
-              ></SelectList>
+                data={categories.map(cat => cat.name)}
+                setSelected={setSelectedCategory}
+                search={false}
+                onSelect={handleCategorySelect}></SelectList>
             </>
           ) : selectedFilter === 'Date range' ? (
             <Text>Date range filter input will be displayed</Text>
@@ -171,17 +173,17 @@ const FilterScreen = ({navigation}) => {
 export default FilterScreen;
 
 const styles = StyleSheet.create({
-    root:{
-        flexDirection:'column',
-        height:'100%',
-        borderBottomColor:'red',
-    },
+  root: {
+    flexDirection: 'column',
+    height: '100%',
+    borderBottomColor: 'red',
+  },
   filterView: {},
   filterInput: {},
   resultsView: {
-    flex:1,
-    borderWidth:2,
-    paddingHorizontal:20,
+    flex: 1,
+    borderWidth: 2,
+    paddingHorizontal: 20,
   },
   flatlist: {
     width: '100%',

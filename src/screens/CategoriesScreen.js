@@ -11,12 +11,14 @@ const CategoriesScreen = ({navigation}) => {
     {name: 'Cat1', colour: '#ffaa33'},
   ]);
   const [input, setInput] = useState('');
-  const [colour, setColour] = useState('')
+  const [colour, setColour] = useState('');
   useEffect(() => {
-    AsyncStorage.getItem('categories').then(categories => {
-      if (categories === null) return;
-      setCategories(JSON.parse(categories));
-    }).catch(err=>console.log({err}));
+    AsyncStorage.getItem('categories')
+      .then(categories => {
+        if (categories === null) return;
+        setCategories(JSON.parse(categories));
+      })
+      .catch(err => console.log({err}));
   }, []);
 
   const renderCategory = ({item}) => {
@@ -35,32 +37,37 @@ const CategoriesScreen = ({navigation}) => {
     );
   };
 
-  const onPressCategorySubmit = ()=>{
-    const newCategory = {name:input,colour:'#'+colour.toLowerCase()};
-    const newCategories = [...categories,newCategory]
-    AsyncStorage.setItem('categories',JSON.stringify(newCategories)).then(()=>{
-        setCategories(newCategories),
-        setInput('')
-        setColour('')
-    })
-  }
-  
+  const onPressCategorySubmit = () => {
+    const newCategory = {name: input, colour: '#' + colour.toLowerCase()};
+    const newCategories = [...categories, newCategory];
+    AsyncStorage.setItem('categories', JSON.stringify(newCategories)).then(
+      () => {
+        setCategories(newCategories), setInput('');
+        setColour('');
+      },
+    );
+  };
+
   return (
     <View>
       <Text>Here are the available Categories:</Text>
       <View style={styles.categoryInputBox}>
-      <View style={styles.inputForm}>
-        <View style={styles.inputBox}>
-          <CustomInput
-            placeholder="New Category name here"
-            value={input}
-            setValue={setInput}></CustomInput>
+        <View style={styles.inputForm}>
+          <View style={styles.inputBox}>
+            <CustomInput
+              placeholder="New Category name here"
+              value={input}
+              setValue={setInput}></CustomInput>
+          </View>
+          <View style={styles.addButton}>
+            <CustomButton onPress={onPressCategorySubmit} text="Add" />
+          </View>
         </View>
-        <View style={styles.addButton}>
-          <CustomButton onPress={onPressCategorySubmit} text="Add" />
-        </View>
-      </View>
-      <TextInput placeholder='Colour here' onChangeText={(text)=>setColour(text)}>{colour}</TextInput>
+        <TextInput
+          placeholder="Colour here"
+          onChangeText={text => setColour(text)}>
+          {colour}
+        </TextInput>
       </View>
       <FlatList
         contentContainerStyle={styles.flatlist}
@@ -89,15 +96,16 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     margin: 10,
     alignItems: 'center',
-  },categoryInputBox:{
-    width:'auto',
-    marginHorizontal:10,
-    maxWidth:'100%',
-    borderWidth:1,
+  },
+  categoryInputBox: {
+    width: 'auto',
+    marginHorizontal: 10,
+    maxWidth: '100%',
+    borderWidth: 1,
     borderColor: '#EC8B5E',
   },
   inputForm: {
-      borderWidth: 1,
+    borderWidth: 1,
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',

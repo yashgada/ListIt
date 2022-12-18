@@ -11,8 +11,9 @@ import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskItem from '../components/TaskItem';
 import CustomButton from '../components/CustomButton';
-import CustomInput from '../components/CustomInput';
+// import CustomInput from '../components/CustomInput';
 import {SelectList} from 'react-native-dropdown-select-list';
+import CustomInput from '../components/CustomInput.js';
 
 const HomeScreen = ({navigation}) => {
   const [currentUser, setCurrentUser] = useState('');
@@ -90,12 +91,12 @@ const HomeScreen = ({navigation}) => {
       },
     ];
     // console.log({newList});
-    console.log(newList.map(item=>item.category));
+    console.log(newList.map(item => item.category));
     AsyncStorage.setItem(currentUser + 'list', JSON.stringify(newList)).catch(
       err => console.log(err),
     );
     setList(
-      list => newList
+      list => newList,
       // [...list, {title: input, timestamp: inputTime, key,category:{}}]
     );
 
